@@ -1,0 +1,8 @@
+sudo: false
+language: java
+before_install:
+    - chmod +x Lazy/gradlew
+script:
+    - cd Lazy
+    - ./gradlew build
+    - ./gradlew test
