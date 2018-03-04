@@ -1,7 +1,7 @@
 sudo: false
 language: java
 before_install:
-    - chmod +x Lazy/gradlew
+    - chmod +x hw0Lazy/gradlew
 script:
     - cd hw0Lazy
     - ./gradlew build
