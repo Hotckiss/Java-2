@@ -197,7 +197,7 @@ public class ThreadPoolImpl implements ThreadPool {
             try {
                 result = function.apply(parent.get());
             } catch (LightExecutionException e) {
-                executionException= (Exception) e.getCause();
+                executionException = (Exception) e.getCause();
             } finally {
                 isReady = true;
             }
