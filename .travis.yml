@@ -1,8 +1,7 @@
 sudo: false
 language: java
 before_install:
-    - chmod +x Lazy/gradlew
+    - chmod +x FindPair/gradlew
 script:
-    - cd Lazy
+    - cd FindPair
     - ./gradlew build
-    - ./gradlew test
