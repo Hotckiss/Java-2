@@ -9,15 +9,24 @@ import javafx.scene.text.Text;
  * A class that allows to paint some elements of tic tac toe game
  */
 public class FieldPainter {
+    public static final FieldPainter FIELD_PAINTER_INSTANCE = new FieldPainter();
+
     private static final int FIELD_WIDTH = 300;
     private static final int FIELD_HEIGHT = 300;
     private static final int BOX_WIDTH = FIELD_WIDTH / 3;
     private static final int BOX_HEIGHT = FIELD_HEIGHT / 3;
     private static final int SHIFT = 10;
 
-    private static Canvas canvas;
-    private static Text currentTurn;
-    private static Text gameResult;
+    private Canvas canvas;
+    private Text currentTurn;
+    private Text gameResult;
+
+    /**
+     * Singleton class
+     */
+    private FieldPainter() {
+        //nothing to do;
+    }
 
     /**
      * Main that initialize painter and associates canvas with it
@@ -25,7 +34,7 @@ public class FieldPainter {
      * @param status status bar of the game
      * @param result game result field
      */
-    public static void init(Canvas field, Text status, Text result) {
+    public void init(Canvas field, Text status, Text result) {
         canvas = field;
         currentTurn = status;
         gameResult = result;
@@ -34,7 +43,7 @@ public class FieldPainter {
     /**
      * Method that clears canvas and draw new grid for game
      */
-    public static void initEmptyField() {
+    public void initEmptyField() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         gc.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
@@ -53,7 +62,7 @@ public class FieldPainter {
      * @param x row of X
      * @param y column of X
      */
-    public static void putX(int x, int y) {
+    public void putX(int x, int y) {
         if (x < 0 || x > 2 || y < 0 || y > 2) {
             return;
         }
@@ -71,7 +80,7 @@ public class FieldPainter {
      * @param x row of O
      * @param y column of O
      */
-    public static void putO(int x, int y) {
+    public void putO(int x, int y) {
         if (x < 0 || x > 2 || y < 0 || y > 2) {
             return;
         }
@@ -87,7 +96,7 @@ public class FieldPainter {
      * Method that can change text in status bar
      * @param text new text in status bar
      */
-    public static void setCurrentTurn(String text) {
+    public void setCurrentTurn(String text) {
         currentTurn.setText(text);
     }
 
@@ -95,7 +104,7 @@ public class FieldPainter {
      * Method that can change result of the game text
      * @param text new text of game result
      */
-    public static void setResult(String text) {
+    public void setResult(String text) {
         gameResult.setText(text);
     }
 }

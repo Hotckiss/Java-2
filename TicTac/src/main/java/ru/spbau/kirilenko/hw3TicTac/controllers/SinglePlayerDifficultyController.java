@@ -2,6 +2,7 @@ package ru.spbau.kirilenko.hw3TicTac.controllers;
 
 import javafx.fxml.FXML;
 import ru.spbau.kirilenko.hw3TicTac.CurrentGameType;
+import ru.spbau.kirilenko.hw3TicTac.GameTypes;
 import ru.spbau.kirilenko.hw3TicTac.ScenesLoader;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class SinglePlayerDifficultyController {
      */
     @FXML
     public void startEasyGame() throws IOException {
-        CurrentGameType.setType(0);
+        CurrentGameType.setType(GameTypes.EASY_GAME);
         ScenesLoader.getStage().setScene(ScenesLoader.getGameScene());
     }
 
@@ -27,7 +28,7 @@ public class SinglePlayerDifficultyController {
      */
     @FXML
     public void startHardGame() throws IOException {
-        CurrentGameType.setType(1);
+        CurrentGameType.setType(GameTypes.HARD_GAME);
         ScenesLoader.getStage().setScene(ScenesLoader.getGameScene());
 
     }

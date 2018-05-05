@@ -4,49 +4,40 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 import ru.spbau.kirilenko.hw3TicTac.CurrentGameType;
-import ru.spbau.kirilenko.hw3TicTac.FieldPainter;
+import ru.spbau.kirilenko.hw3TicTac.GameTypes;
 import ru.spbau.kirilenko.hw3TicTac.ScenesLoader;
 import ru.spbau.kirilenko.hw3TicTac.logic.*;
 import ru.spbau.kirilenko.hw3TicTac.statistics.Statistics;
 
 import java.io.IOException;
 
+import static ru.spbau.kirilenko.hw3TicTac.FieldPainter.FIELD_PAINTER_INSTANCE;
 import static ru.spbau.kirilenko.hw3TicTac.logic.GameStatus.*;
 
 /**
  * Controller of game field
  */
 public class GameController {
-    private AbstractGame game;
+    private Game game;
 
     @FXML public Canvas field;
     @FXML public Text status;
     @FXML public Text result;
 
     /**
-     * Create AI that specified by game settings
-     */
-    public GameController() {
-        if (CurrentGameType.getCurrentType() == 0) {
-            game = new EasyGame();
-        } else {
-            game = new HardGame();
-        }
-    }
-
-    /**
      * Init game field to play
      */
     @FXML public void initialize() {
-        FieldPainter.init(field, status, result);
-        FieldPainter.initEmptyField();
-        FieldPainter.setCurrentTurn("X move");
-        FieldPainter.setResult("");
-        if (CurrentGameType.getCurrentType() == 0) {
-            game = new EasyGame();
+        FIELD_PAINTER_INSTANCE.init(field, status, result);
+        FIELD_PAINTER_INSTANCE.initEmptyField();
+        FIELD_PAINTER_INSTANCE.setCurrentTurn("X move");
+        FIELD_PAINTER_INSTANCE.setResult("");
+        if (CurrentGameType.getCurrentType() == GameTypes.EASY_GAME) {
+            game = new Game(new EasyAiPlayer());
         } else {
-            game = new HardGame();
+            game = new Game(new HardAiPlayer());
         }
     }
 
@@ -60,22 +51,22 @@ public class GameController {
         int x = (int) (mouseEvent.getX() / 100.0);
         int y = (int) (mouseEvent.getY() / 100.0);
 
-        if (CurrentGameType.getCurrentType() == 2) {
+        if (CurrentGameType.getCurrentType() == GameTypes.PVP_GAME) {
             if (game.makePlayerTurn(x, y)) {
                 if (game.getCurrentTurn() == CurrentTurn.TURN_O) {
-                    FieldPainter.putX(x, y);
+                    FIELD_PAINTER_INSTANCE.putX(x, y);
                 } else {
-                    FieldPainter.putO(x, y);
+                    FIELD_PAINTER_INSTANCE.putO(x, y);
                 }
                 updateStatusBars();
             }
         } else {
             if (game.makePlayerTurn(x, y)) {
-                FieldPainter.putX(x, y);
-                MyPair<Integer, Integer> move = game.makeAITurn();
+                FIELD_PAINTER_INSTANCE.putX(x, y);
+                Pair<Integer, Integer> move = game.makeAITurn();
 
                 if (move != null) {
-                    FieldPainter.putO(move.getFirst(), move.getSecond());
+                    FIELD_PAINTER_INSTANCE.putO(move.getKey(), move.getValue());
                 }
                 updateStatusBars();
             }
@@ -96,7 +87,7 @@ public class GameController {
      */
     @FXML
     public void back() throws IOException {
-        if (CurrentGameType.getCurrentType() != 2) {
+        if (CurrentGameType.getCurrentType() != GameTypes.PVP_GAME) {
             ScenesLoader.getStage().setScene(ScenesLoader.getSinglePlayerDifficulty());
         } else {
             ScenesLoader.getStage().setScene(ScenesLoader.getMainMenuScene());
@@ -105,11 +96,11 @@ public class GameController {
 
     private void updateStatusBars() {
         if (game.getStatus() == WIN_X) {
-            FieldPainter.setResult("X wins!");
+            FIELD_PAINTER_INSTANCE.setResult("X wins!");
 
-            if (CurrentGameType.getCurrentType() == 0) {
+            if (CurrentGameType.getCurrentType() == GameTypes.EASY_GAME) {
                 Statistics.incrementWinsEasy();
-            } else if (CurrentGameType.getCurrentType() == 1) {
+            } else if (CurrentGameType.getCurrentType() == GameTypes.HARD_GAME) {
                 Statistics.incrementWinsHard();
             } else {
                 Statistics.incrementWinsX();
@@ -117,11 +108,11 @@ public class GameController {
         }
 
         if (game.getStatus() == WIN_O) {
-            FieldPainter.setResult("O wins!");
+            FIELD_PAINTER_INSTANCE.setResult("O wins!");
 
-            if (CurrentGameType.getCurrentType() == 0) {
+            if (CurrentGameType.getCurrentType() == GameTypes.EASY_GAME) {
                 Statistics.incrementLosesEasy();
-            } else if (CurrentGameType.getCurrentType() == 1) {
+            } else if (CurrentGameType.getCurrentType() == GameTypes.HARD_GAME) {
                 Statistics.incrementLosesHard();
             } else {
                 Statistics.incrementWinsO();
@@ -129,11 +120,11 @@ public class GameController {
         }
 
         if (game.getStatus() == DRAW) {
-            FieldPainter.setResult("Draw!");
+            FIELD_PAINTER_INSTANCE.setResult("Draw!");
 
-            if (CurrentGameType.getCurrentType() == 0) {
+            if (CurrentGameType.getCurrentType() == GameTypes.EASY_GAME) {
                 Statistics.incrementDrawsEasy();
-            } else if (CurrentGameType.getCurrentType() == 1) {
+            } else if (CurrentGameType.getCurrentType() == GameTypes.HARD_GAME) {
                 Statistics.incrementDrawsHard();
             } else {
                 Statistics.incrementDraws();
@@ -142,11 +133,11 @@ public class GameController {
 
         if (game.getStatus() == PLAYING) {
             if (game.getCurrentTurn() == CurrentTurn.TURN_X) {
-                FieldPainter.setCurrentTurn("X move");
+                FIELD_PAINTER_INSTANCE.setCurrentTurn("X move");
             }
 
             if (game.getCurrentTurn() == CurrentTurn.TURN_O) {
-                FieldPainter.setCurrentTurn("O move");
+                FIELD_PAINTER_INSTANCE.setCurrentTurn("O move");
             }
         }
     }

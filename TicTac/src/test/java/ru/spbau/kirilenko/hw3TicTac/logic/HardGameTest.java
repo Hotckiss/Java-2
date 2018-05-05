@@ -1,5 +1,6 @@
 package ru.spbau.kirilenko.hw3TicTac.logic;
 
+import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,14 +16,14 @@ import static ru.spbau.kirilenko.hw3TicTac.logic.GameStatus.WIN_X;
  * Class that tests AI in hard game and additional helpful methods
  */
 public class HardGameTest {
-    private HardGame hardGame;
+    private Game hardGame;
 
     /**
      * Init hard game
      */
     @Before
     public void init() {
-        hardGame = new HardGame();
+        hardGame = new Game(new HardAiPlayer());
     }
 
     /**
@@ -83,21 +84,21 @@ public class HardGameTest {
 
         hardGame.makePlayerTurn(1, 1);
 
-        MyPair<Integer, Integer> mp = hardGame.makeAITurn();
-        assertThat(mp.getFirst(), is(0));
-        assertThat(mp.getSecond(), is(0));
+        Pair<Integer, Integer> mp = hardGame.makeAITurn();
+        assertThat(mp.getKey(), is(0));
+        assertThat(mp.getValue(), is(0));
 
         hardGame.makePlayerTurn(2, 0);
 
         mp = hardGame.makeAITurn();
-        assertThat(mp.getFirst(), is(0));
-        assertThat(mp.getSecond(), is(2));
+        assertThat(mp.getKey(), is(0));
+        assertThat(mp.getValue(), is(2));
 
         hardGame.makePlayerTurn(2, 1);
 
         mp = hardGame.makeAITurn();
-        assertThat(mp.getFirst(), is(0));
-        assertThat(mp.getSecond(), is(1));
+        assertThat(mp.getKey(), is(0));
+        assertThat(mp.getValue(), is(1));
 
         assertEquals(WIN_O, hardGame.getStatus());
     }

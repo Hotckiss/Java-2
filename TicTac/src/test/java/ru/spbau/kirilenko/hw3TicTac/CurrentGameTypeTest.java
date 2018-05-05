@@ -14,8 +14,8 @@ public class CurrentGameTypeTest {
      */
     @Test
     public void setType() {
-        CurrentGameType.setType(2);
-        assertEquals(2, CurrentGameType.getCurrentType());
+        CurrentGameType.setType(GameTypes.PVP_GAME);
+        assertEquals(GameTypes.PVP_GAME, CurrentGameType.getCurrentType());
     }
 
     /**
@@ -23,7 +23,7 @@ public class CurrentGameTypeTest {
      */
     @Test
     public void getCurrentType() {
-        CurrentGameType.setType(1);
-        assertEquals(1, CurrentGameType.getCurrentType());
+        CurrentGameType.setType(GameTypes.HARD_GAME);
+        assertEquals(GameTypes.HARD_GAME, CurrentGameType.getCurrentType());
     }
 }

@@ -3,6 +3,7 @@ package ru.spbau.kirilenko.hw3TicTac.controllers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import ru.spbau.kirilenko.hw3TicTac.CurrentGameType;
+import ru.spbau.kirilenko.hw3TicTac.GameTypes;
 import ru.spbau.kirilenko.hw3TicTac.ScenesLoader;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class MainController {
      */
     @FXML
     public void initHotSeatGame() throws IOException {
-        CurrentGameType.setType(2);
+        CurrentGameType.setType(GameTypes.PVP_GAME);
         ScenesLoader.getStage().setScene(ScenesLoader.getGameScene());
 
     }

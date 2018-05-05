@@ -4,13 +4,13 @@ package ru.spbau.kirilenko.hw3TicTac;
  * Class that stores current game type
  */
 public class CurrentGameType {
-    private static int currentType = 0;
+    private static GameTypes currentType = GameTypes.EASY_GAME;
 
     /**
      * Method that can change current game type
      * @param newType new game type
      */
-    public static void setType(int newType) {
+    public static void setType(GameTypes newType) {
         currentType = newType;
     }
 
@@ -18,7 +18,7 @@ public class CurrentGameType {
      * Method that returns current game type
      * @return current game type
      */
-    public static int getCurrentType() {
+    public static GameTypes getCurrentType() {
         return currentType;
     }
 }

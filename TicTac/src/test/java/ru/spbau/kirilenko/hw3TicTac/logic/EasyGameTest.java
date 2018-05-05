@@ -11,13 +11,12 @@ import static ru.spbau.kirilenko.hw3TicTac.logic.GameStatus.PLAYING;
  * Class that tests AI in easy game
  */
 public class EasyGameTest {
-
     /**
      * Method that check correctness of making turns for AI
      */
     @Test
     public void makeAITurn() {
-        EasyGame easyGame = new EasyGame();
+        Game easyGame = new Game(new EasyAiPlayer());
 
         assertEquals(TURN_X, easyGame.getCurrentTurn());
         easyGame.makePlayerTurn(1, 1);
