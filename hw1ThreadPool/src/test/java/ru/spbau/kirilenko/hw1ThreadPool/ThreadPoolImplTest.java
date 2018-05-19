@@ -26,7 +26,6 @@ public class ThreadPoolImplTest {
     public void stopPool() {
         pool.shutdown();
     }
-
     /**
      * Testing thread pool with some number of simple tasks
      */
@@ -171,5 +170,19 @@ public class ThreadPoolImplTest {
             LightFuture<Integer> result = pool.submit(task);
             result.thenApply(after);
         }
+    }
+
+    /**
+     * Test blocking thread in then apply
+     */
+    @Test
+    public void testThenApplyBlocking() {
+        Supplier<Integer> task = () -> 42;
+        Function<Integer, Integer> addTwo = (a) -> a + 2;
+        ThreadPoolImpl pool1 = new ThreadPoolImpl(1);
+
+        LightFuture<Integer> parent = pool1.submit(task);
+        parent.get();
+        assertThat(parent.thenApply(addTwo).get(), is(44));
     }
 }

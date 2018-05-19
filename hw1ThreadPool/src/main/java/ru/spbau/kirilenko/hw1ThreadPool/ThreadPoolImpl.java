@@ -71,12 +71,9 @@ public class ThreadPoolImpl implements ThreadPool {
                         future.execute();
                         future.notifyAll();
                     }
-                    synchronized (tasks) {
-                        tasks.notify();
-                    }
                 }
             } catch (InterruptedException e) {
-                return;
+                System.err.println("Thread was interrupted");
             }
         }
     }
@@ -85,9 +82,29 @@ public class ThreadPoolImpl implements ThreadPool {
      * {@inheritDoc}
      */
     @Override
-    public synchronized void shutdown() {
-        for (Thread thread : threads) {
-            thread.interrupt();
+    public void shutdown() {
+        synchronized (tasks) {
+            for (LightFutureAbstract task : tasks) {
+                task.shutdownStop();
+                synchronized (task) {
+                    task.notifyAll();
+                }
+            }
+            tasks.clear();
+        }
+
+        synchronized (threads) {
+            for (Thread thread : threads) {
+                while (thread.getState() != Thread.State.TERMINATED && thread.getState() != Thread.State.NEW) {
+                    thread.interrupt();
+                }
+                try {
+                    thread.join();
+                } catch (InterruptedException ignored) {
+                    System.err.println("Thread was interrupted");
+                }
+            }
+            threads.clear();
         }
     }
 
@@ -100,7 +117,7 @@ public class ThreadPoolImpl implements ThreadPool {
         protected volatile boolean isReady;
         protected volatile T result;
         protected volatile Exception executionException;
-
+        protected volatile ArrayList<LightFutureAbstract<?>> children = new ArrayList<>();
         /**
          * {@inheritDoc}
          */
@@ -134,13 +151,26 @@ public class ThreadPoolImpl implements ThreadPool {
         @Override
         public synchronized <U> LightFuture<U> thenApply(@NotNull Function<? super T, ? extends U> function) {
             LightFutureAbstract<U> taskApply = new LightFutureThenApply<>(function, this);
-            synchronized (tasks) {
-                tasks.add(taskApply);
-                tasks.notifyAll();
+            if (isReady) {
+                synchronized (tasks) {
+                    tasks.add(taskApply);
+                    tasks.notifyAll();
+                }
+            } else {
+                children.add(taskApply);
             }
+
             return taskApply;
         }
 
+        /**
+         * Method that makes task finished with an error
+         */
+        public void shutdownStop() {
+            executionException = new LightExecutionException(new Exception("Task was killed by shutdown"));
+            isReady = true;
+
+        }
         /**
          * Method that should be called by thread pool worker to
          * start executing task
@@ -171,6 +201,11 @@ public class ThreadPoolImpl implements ThreadPool {
             } finally {
                 isReady = true;
             }
+
+            synchronized (tasks) {
+                tasks.addAll(children);
+                tasks.notifyAll();
+            }
         }
     }
 
@@ -200,6 +235,11 @@ public class ThreadPoolImpl implements ThreadPool {
                 executionException = (Exception) e.getCause();
             } finally {
                 isReady = true;
+            }
+
+            synchronized (tasks) {
+                tasks.addAll(children);
+                tasks.notifyAll();
             }
         }
     }
