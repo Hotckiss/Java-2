@@ -12,5 +12,6 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.jetbrains', name: 'annotations', version: '13.0'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
 }
