@@ -12,6 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import org.apache.commons.io.IOUtils;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -21,10 +24,12 @@ import java.util.stream.Collectors;
 public class Server {
     private static final int LIST_COMMAND_ID = 1;
     private static final int GET_COMMAND_ID = 2;
+    private static final int POOL_SIZE = 4;
+
     private final int port;
     private boolean isActive;
     private ServerSocket serverSocket;
-
+    private final ExecutorService pool;
     /**
      * Constructs new server class with fixed port for users
      * @param port server port
@@ -32,6 +37,7 @@ public class Server {
     @SuppressWarnings("WeakerAccess")
     public Server(int port) {
         this.port = port;
+        this.pool = Executors.newFixedThreadPool(POOL_SIZE);
     }
 
     /**
@@ -53,7 +59,7 @@ public class Server {
                     isActive = false;
                     return;
                 }
-                new Thread(new ClientHandler(client)).start();
+                pool.submit(new ClientHandler(client));
             }
         }).start();
     }
@@ -93,14 +99,15 @@ public class Server {
                     try {
                         requestType = queries.readInt();
                     } catch (Exception e) {
+                        System.err.println("Command not found.");
                         break;
                     }
                     if (requestType == LIST_COMMAND_ID) {
                         String directoryName = queries.readUTF();
-                        new Thread(new ListTask(queryResult, directoryName)).start();
+                        new ListTask(queryResult, directoryName).execute();
                     } else if (requestType == GET_COMMAND_ID) {
                         String fileName = queries.readUTF();
-                        new Thread(new GetTask(queryResult, fileName)).start();
+                        new GetTask(queryResult, fileName).execute();
                     }
                 }
             } catch (IOException e) {
@@ -112,8 +119,7 @@ public class Server {
     /**
      * Server task of downloading file
      */
-    private class GetTask implements Runnable {
-        private static final int BUFFER_SIZE = 1024;
+    private class GetTask {
         @NotNull private final DataOutputStream clientInput;
         @NotNull private final String fileName;
 
@@ -132,8 +138,7 @@ public class Server {
         /**
          * Process of file downloading
          */
-        @Override
-        public void run() {
+        public void execute() {
             try {
                 Path filePath = Paths.get(fileName);
                 if (Files.isDirectory(filePath) || !Files.exists(filePath)) {
@@ -146,15 +151,7 @@ public class Server {
                     }
 
                     try (FileInputStream fileStream = new FileInputStream(filePath.toFile())) {
-                        byte[] buffer = new byte[BUFFER_SIZE];
-                        long written = 0;
-
-                        while (written < total) {
-                            int pieceSize = (int) Math.min(BUFFER_SIZE, total - written);
-                            int readBytes = fileStream.read(buffer, 0, pieceSize);
-                            clientInput.write(buffer, 0, readBytes);
-                            written += readBytes;
-                        }
+                        IOUtils.copyLarge(fileStream, clientInput);
                     } catch (IOException e) {
                         System.err.println("Error occurred while writing file.");
                         throw e;
@@ -169,7 +166,7 @@ public class Server {
     /**
      * Server task of listing all files and folders in directory
      */
-    private class ListTask implements Runnable {
+    private class ListTask {
         @NotNull private final DataOutputStream clientInput;
         @NotNull private final String directoryName;
 
@@ -188,8 +185,7 @@ public class Server {
         /**
          * Process of directory listing
          */
-        @Override
-        public void run() {
+        public void execute() {
             try {
                 Path directoryPath = Paths.get(directoryName);
                 if (Files.isDirectory(directoryPath)) {
