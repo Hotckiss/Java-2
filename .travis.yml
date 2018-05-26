@@ -1,8 +1,7 @@
 sudo: false
 language: java
 before_install:
-    - chmod +x Lazy/gradlew
+    - chmod +x MyJUnit/gradlew
 script:
-    - cd Lazy
+    - cd MyJUnit
     - ./gradlew build
-    - ./gradlew test
