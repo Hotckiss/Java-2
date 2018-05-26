@@ -1,16 +1,13 @@
 package ru.spbau.kirilenko;
 
 import lombok.Getter;
-import org.junit.Assert.*;
 import org.junit.Test;
 import ru.spbau.kirilenko.annotations.After;
 import ru.spbau.kirilenko.annotations.AfterClass;
 import ru.spbau.kirilenko.annotations.Before;
 import ru.spbau.kirilenko.annotations.BeforeClass;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Testing all usage ways of tester

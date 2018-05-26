@@ -15,28 +15,34 @@ import java.util.List;
  */
 public class Main {
     private static final String URL_PREFIX = "file:";
-    private static URLClassLoader classLoader;
 
     /**
-     * Main class that gwets paths and runs tests in classes specified with them
+     * Main class that gets paths and runs tests in classes specified with them
      * @param args user arguments
      */
     public static void main(String[] args) {
         List<String> classes = new ArrayList<>();
         List<URL> paths = new ArrayList<>();
 
-        showHelp();
+        for (String arg : args) {
+            if (arg.equals("-h") || arg.equals("--help")) {
+                showHelp();
+            }
+        }
+
         addURL(System.getProperty("user.dir"), paths);
         addClasspath(args, classes, paths);
 
         URL[] urls = new URL[paths.size()];
         paths.toArray(urls);
-        classLoader = new URLClassLoader(urls);
+        URLClassLoader classLoader = new URLClassLoader(urls);
 
-        classes.forEach(Main::testClass);
+        for (String className : classes) {
+            testClass(className, classLoader);
+        }
     }
 
-    private static void testClass(@NotNull String className) {
+    private static void testClass(@NotNull String className, @NotNull URLClassLoader classLoader) {
         try {
             Class clazz = classLoader.loadClass(className);
             List<TestScore> testScores = Tester.run(clazz);
