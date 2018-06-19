@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+package messages;
+
+option java_package = "ru.spbau.kirilenko";
+option java_outer_classname = "SortingMessage";
+
+message Sort {
+    repeated int32 arr = 1;
+}

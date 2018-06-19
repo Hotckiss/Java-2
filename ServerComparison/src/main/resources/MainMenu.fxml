@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="ru.spbau.kirilenko.MainMenuController"
+          prefHeight="400.0" prefWidth="600.0" alignment="CENTER">
+    <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0">
+        <padding><Insets right="25" bottom="25" left="25"/></padding>
+        <Label text="Welcome to servers benchmark!"/>
+    </HBox>
+    <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <Label text="Architecture:     " />
+        <ChoiceBox fx:id="architecture" minWidth="190">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Server with thread for each client" />
+                    <String fx:value="Server with thread pool" />
+                    <String fx:value="Non-blocking server" />
+                </FXCollections>
+            </items>
+        </ChoiceBox>
+    </HBox>
+    <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <padding><Insets top="10" right="25" bottom="10" left="25"/></padding>
+        <Label text="X value:     " />
+        <TextField fx:id="valueX" maxWidth="70"/>
+    </HBox>
+    <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3">
+        <HBox alignment="CENTER">
+            <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
+            <Label text="Variable to change:     " />
+            <ChoiceBox fx:id="variableToChange" maxWidth="70">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="N" />
+                        <String fx:value="M" />
+                        <String fx:value="D" />
+                    </FXCollections>
+                </items>
+            </ChoiceBox>
+        </HBox>
+        <HBox alignment="CENTER">
+            <padding><Insets top="10" right="25" bottom="25" left="25"/></padding>
+            <Label text="From:  " />
+            <TextField fx:id="lowerBound" maxWidth="70"/>
+            <Label text="  To:  " />
+            <TextField fx:id="upperBound" maxWidth="70"/>
+            <Label text="  Step:  " />
+            <TextField fx:id="stepBound" maxWidth="70"/>
+        </HBox>
+    </VBox>
+    <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="4">
+        <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+        <Label text="Other values" />
+        <HBox alignment="CENTER">
+            <padding><Insets top="10" right="25" bottom="25" left="25"/></padding>
+            <Label text="N:  " />
+            <TextField fx:id="valueN" maxWidth="70"/>
+            <Label text="  M:  " />
+            <TextField fx:id="valueM" maxWidth="70"/>
+            <Label text="  D:  " />
+            <TextField fx:id="valueDelta" maxWidth="70"/>
+        </HBox>
+        <Button text="Run!" onAction="#runBench" />
+    </VBox>
+    <columnConstraints>
+        <ColumnConstraints />
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="30"/>
+        <RowConstraints minHeight="30"/>
+        <RowConstraints minHeight="30"/>
+        <RowConstraints minHeight="30"/>
+        <RowConstraints minHeight="30"/>
+    </rowConstraints>
+</GridPane>
