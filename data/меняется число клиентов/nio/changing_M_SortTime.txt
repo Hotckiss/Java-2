@@ -1,0 +1,27 @@
+Configuration:
+Arch type: NON_BLOCKING_SERVER
+Number of queries from each client: 10
+Variable: CLIENTS_ONLINE
+Range: from 1 to 20 with step 1
+Arrays size: 20000
+Delay: 100
+1 701
+2 558
+3 563
+4 616
+5 616
+6 733
+7 1153
+8 1205
+9 1166
+10 1217
+11 1217
+12 1238
+13 1268
+14 1245
+15 1376
+16 1338
+17 1387
+18 1400
+19 1335
+20 1370

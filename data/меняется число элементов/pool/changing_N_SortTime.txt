@@ -1,0 +1,16 @@
+Configuration:
+Arch type: THREAD_POOL_SERVER
+Number of queries from each client: 10
+Variable: NUMBERS_IN_ARRAY
+Range: from 10000 to 30000 with step 2500
+Clients online: 10
+Delay: 100
+10000 142
+12500 224
+15000 324
+17500 440
+20000 664
+22500 855
+25000 1027
+27500 1157
+30000 1353
