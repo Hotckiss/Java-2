@@ -38,6 +38,7 @@ public class ServerNonBlocking {
         isActive = false;
         try {
             serverSocketChannel.close();
+            threadPool.shutdown();
         } catch (IOException e) {
             logger.info("cannot stop server" + e.getMessage());
         }

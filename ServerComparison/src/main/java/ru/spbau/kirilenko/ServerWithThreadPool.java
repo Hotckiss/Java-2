@@ -51,6 +51,7 @@ public class ServerWithThreadPool {
 
     public void stop() {
         isActive = false;
+        threadPool.shutdown();
     }
 
     private class ClientHandler implements Runnable {
