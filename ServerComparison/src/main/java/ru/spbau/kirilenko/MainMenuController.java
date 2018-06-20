@@ -169,6 +169,7 @@ public class MainMenuController {
             alert.setHeaderText(null);
             alert.setContentText("Error occurred, testing failed");
             alert.showAndWait();
+            return;
         }
 
         try {
