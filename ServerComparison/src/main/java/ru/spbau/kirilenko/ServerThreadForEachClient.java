@@ -7,8 +7,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class ServerThreadForEachClient {
+    private static final Logger logger = Logger.getLogger("SimpleServerLogger");
     private final int port;
     private boolean isActive;
     private ServerSocket serverSocket;
@@ -23,6 +25,7 @@ public class ServerThreadForEachClient {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
+            logger.info("cannot run server with that port " + e.getMessage());
             return;
         }
         isActive = true;
@@ -32,7 +35,8 @@ public class ServerThreadForEachClient {
                 try {
                     client = serverSocket.accept();
                 } catch (IOException e) {
-                    isActive = false;
+                    stop();
+                    logger.info("cannot accept new user " + e.getMessage());
                     return;
                 }
                 new Thread(new ClientHandler(client)).start();
@@ -77,7 +81,7 @@ public class ServerThreadForEachClient {
                     writeRequest(queryResult, array, sortTime, qTime);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.info("IO error while receiving message " + e.getMessage());
             }
         }
     }

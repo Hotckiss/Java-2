@@ -8,9 +8,12 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Random;
+import java.util.logging.Logger;
 
 @AllArgsConstructor
 public class Client {
+    private static final Logger logger = Logger.getLogger("client");
+
     private ClientBaggage baggage;
 
     public void runClient() throws IOException {
@@ -41,7 +44,10 @@ public class Client {
             toServer.writeInt(0);
 
         } catch (InterruptedException | IOException ex) {
+            logger.info("\"I/O error while connected to server\"");
+            socket.close();
             System.err.println("I/O error while connected to server");
+            return;
         }
 
         try {

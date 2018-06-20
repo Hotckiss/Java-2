@@ -17,8 +17,10 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 public class ServerNonBlocking {
+    private static final Logger logger = Logger.getLogger("NIOLogger");
     private int port;
     private boolean isActive;
     private Selector readSelector;
@@ -32,9 +34,13 @@ public class ServerNonBlocking {
         this.isActive = false;
     }
 
-    public void stop() throws IOException {
+    public void stop() {
         isActive = false;
-        serverSocketChannel.close();
+        try {
+            serverSocketChannel.close();
+        } catch (IOException e) {
+            logger.info("cannot stop server" + e.getMessage());
+        }
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -46,6 +52,7 @@ public class ServerNonBlocking {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.bind(new InetSocketAddress(port));
         } catch (IOException e) {
+            logger.info("cannot connect server to port");
             e.printStackTrace();
         }
 
@@ -60,7 +67,8 @@ public class ServerNonBlocking {
                 selectorRead.register(new ClientMessages(socketChannel));
                 readSelector.wakeup();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.info("cannot accept user");
+                stop();
             }
         }
     }
@@ -81,7 +89,7 @@ public class ServerNonBlocking {
                         handleReady(selectorHandler.selectedKeys().iterator());
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.info("IO error while read or write message " + e.getMessage());
                 }
             }
         }
@@ -100,7 +108,7 @@ public class ServerNonBlocking {
                     }
                     socketChannel.register(selectorHandler, interestedOp, client);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.info("cannot register new client" + e.getMessage());
                 }
             }
         }

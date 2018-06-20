@@ -14,8 +14,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 public class MainMenuController {
+    private static final Logger logger = Logger.getLogger("UILogger");
 
     @FXML private ChoiceBox architecture;
     @FXML private TextField valueX;
@@ -145,6 +147,7 @@ public class MainMenuController {
         try {
             StatisticCollector.writeToFile(filename);
         } catch (FileNotFoundException e) {
+            logger.info("Directory doesnt exist");
             e.printStackTrace();
         }
 
@@ -177,6 +180,7 @@ public class MainMenuController {
         public void run() {
             try {
                 client.runClient();
+                logger.info("Cannot connect to server");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -244,6 +248,7 @@ public class MainMenuController {
         try {
             val = Integer.parseInt(data.getText());
         } catch (NumberFormatException ex) {
+            logger.info("Value in input was incorrect");
             val = defaultValue;
         }
 

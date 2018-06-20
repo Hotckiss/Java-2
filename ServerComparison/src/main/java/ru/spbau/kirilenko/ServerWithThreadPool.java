@@ -12,8 +12,10 @@ import java.net.Socket;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 public class ServerWithThreadPool {
+    private static final Logger logger = Logger.getLogger("PoolLogger");
     private final int port;
     private boolean isActive;
     private ServerSocket serverSocket;
@@ -28,6 +30,7 @@ public class ServerWithThreadPool {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
+            logger.info("cannot run server with that port " + e.getMessage());
             return;
         }
         isActive = true;
@@ -36,9 +39,9 @@ public class ServerWithThreadPool {
                 Socket client;
                 try {
                     client = serverSocket.accept();
-                    //System.err.println("new client");
                 } catch (IOException e) {
-                    isActive = false;
+                    stop();
+                    logger.info("cannot accept new user " + e.getMessage());
                     return;
                 }
                 new Thread(new ServerWithThreadPool.ClientHandler(client)).start();
@@ -53,11 +56,7 @@ public class ServerWithThreadPool {
     private class ClientHandler implements Runnable {
         @NotNull
         private final Socket client;
-        //private int totalSorting = 0;
-        //private int totalQueries = 0;
-        //private int count = 0;
         private ExecutorService outputSender = Executors.newSingleThreadExecutor();
-        //private ArrayList<Future<Long>> requests = new ArrayList<>();
 
         @SuppressWarnings("WeakerAccess")
         public ClientHandler(@NotNull Socket socket) {
@@ -72,13 +71,6 @@ public class ServerWithThreadPool {
                     int requestLength = queries.readInt();
 
                     if (requestLength == 0) {
-                        //for (Future<Long> future : requests) {
-                            //future.get();
-                        //}
-                        //outputSender.shutdown();
-                        //outputSender.awaitTermination(5, TimeUnit.MINUTES);
-                        //queryResult.writeInt(totalSorting);
-                        //queryResult.writeInt(totalQueries);
                         break;
                     }
 
@@ -93,15 +85,9 @@ public class ServerWithThreadPool {
                     int[] array = SortingMessage.Sort.parseFrom(data).getArrList().stream().mapToInt(n -> n).toArray();
 
                     threadPool.submit(new SortTask(array, queryResult, queryStartTime));
-                    //requests.add(threadPool.submit(new SortTask(array, queryResult, queryStartTime)));
-                    //writeRequest(queryResult, array);
-                    //System.err.println("answered");
-                    //totalQueries += (System.currentTimeMillis() - queryStartTime);
-                    //count++;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
-                //System.err.println("Failed to get data.");
+                logger.info("IO error while receiving message " + e.getMessage());
             }
         }
 
@@ -115,9 +101,6 @@ public class ServerWithThreadPool {
             public Long call() throws Exception {
                 long retVal =  Sorter.sort(arr);
                 outputSender.submit(new Sender((int)retVal));
-                //synchronized (ClientHandler.this) {
-                  //  totalSorting += retVal;
-                //}
                 return retVal;
             }
 
@@ -129,11 +112,8 @@ public class ServerWithThreadPool {
                 public void run() {
                     try {
                         writeRequest(queryResult, arr, sortTime, (int)(System.currentTimeMillis() - queryStartTime));
-                        //synchronized (ClientHandler.this) {
-                          //  totalQueries += System.currentTimeMillis() - queryStartTime;
-                        //}
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.info("IO error while receiving message " + e.getMessage());
                     }
                 }
             }
