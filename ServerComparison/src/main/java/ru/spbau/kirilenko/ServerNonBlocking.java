@@ -53,7 +53,6 @@ public class ServerNonBlocking {
             serverSocketChannel.bind(new InetSocketAddress(port));
         } catch (IOException e) {
             logger.info("cannot connect server to port " + e.getMessage());
-            e.printStackTrace();
         }
 
         HandleSelector selectorRead = new HandleSelector(readSelector, SelectionKey.OP_READ);
@@ -89,6 +88,7 @@ public class ServerNonBlocking {
                         handleReady(selectorHandler.selectedKeys().iterator());
                     }
                 } catch (IOException e) {
+                    stop();
                     logger.info("IO error while read or write message " + e.getMessage());
                 }
             }
@@ -108,6 +108,7 @@ public class ServerNonBlocking {
                     }
                     socketChannel.register(selectorHandler, interestedOp, client);
                 } catch (IOException e) {
+                    stop();
                     logger.info("cannot register new client" + e.getMessage());
                 }
             }

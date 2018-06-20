@@ -31,7 +31,7 @@ public class ServerWithThreadPool {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
             logger.info("cannot run server with that port " + e.getMessage());
-            return;
+            return; //STOP server
         }
         isActive = true;
         new Thread(() -> {
@@ -40,7 +40,7 @@ public class ServerWithThreadPool {
                 try {
                     client = serverSocket.accept();
                 } catch (IOException e) {
-                    stop();
+                    stop(); //STOP server
                     logger.info("cannot accept new user " + e.getMessage());
                     return;
                 }
@@ -56,6 +56,7 @@ public class ServerWithThreadPool {
     private class ClientHandler implements Runnable {
         @NotNull
         private final Socket client;
+        private boolean error = false;
         private ExecutorService outputSender = Executors.newSingleThreadExecutor();
 
         @SuppressWarnings("WeakerAccess")
@@ -67,7 +68,7 @@ public class ServerWithThreadPool {
         public void run() {
             try (DataInputStream queries = new DataInputStream(client.getInputStream());
                  DataOutputStream queryResult = new DataOutputStream(client.getOutputStream())) {
-                while (isActive) {
+                while (isActive && !error) {
                     int requestLength = queries.readInt();
 
                     if (requestLength == 0) {
@@ -87,6 +88,12 @@ public class ServerWithThreadPool {
                     threadPool.submit(new SortTask(array, queryResult, queryStartTime));
                 }
             } catch (IOException e) {
+                //client stop working
+                try {
+                    client.close();
+                } catch (IOException e1) {
+                    logger.info("cannot disconnect client " + e.getMessage());
+                }
                 logger.info("IO error while receiving message " + e.getMessage());
             }
         }
@@ -98,7 +105,7 @@ public class ServerWithThreadPool {
             @Getter private long queryStartTime;
 
             @Override
-            public Long call() throws Exception {
+            public Long call() {
                 long retVal =  Sorter.sort(arr);
                 outputSender.submit(new Sender((int)retVal));
                 return retVal;
@@ -113,6 +120,7 @@ public class ServerWithThreadPool {
                     try {
                         writeRequest(queryResult, arr, sortTime, (int)(System.currentTimeMillis() - queryStartTime));
                     } catch (IOException e) {
+                        error = true; // stop client
                         logger.info("IO error while receiving message " + e.getMessage());
                     }
                 }

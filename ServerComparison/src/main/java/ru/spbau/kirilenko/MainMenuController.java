@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import lombok.AllArgsConstructor;
@@ -94,6 +95,11 @@ public class MainMenuController {
                             clients[j].join();
                         } catch (InterruptedException e) {
                             logger.info("Thread interrupted  " + e.getMessage());
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Info");
+                            alert.setHeaderText(null);
+                            alert.setContentText("error in thread where client was runned, probably with connection top server!");
+                            alert.showAndWait();
                         }
                     }
                 }
@@ -115,6 +121,11 @@ public class MainMenuController {
                             clients[j].join();
                         } catch (InterruptedException e) {
                             logger.info("Thread interrupted  " + e.getMessage());
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Info");
+                            alert.setHeaderText(null);
+                            alert.setContentText("error in thread where client was runned, probably with connection top server!");
+                            alert.showAndWait();
                         }
                     }
                 }
@@ -136,6 +147,11 @@ public class MainMenuController {
                             clients[j].join();
                         } catch (InterruptedException e) {
                             logger.info("Thread interrupted  " + e.getMessage());
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Info");
+                            alert.setHeaderText(null);
+                            alert.setContentText("error in thread where client was runned, probably with connection top server!");
+                            alert.showAndWait();
                         }
                     }
                 }
@@ -180,6 +196,11 @@ public class MainMenuController {
                 client.runClient();
             } catch (IOException e) {
                 logger.info("Cannot connect to server " + e.getMessage());
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Info");
+                alert.setHeaderText(null);
+                alert.setContentText("error in thread where client was runned, probably with connection top server!");
+                alert.showAndWait();
             }
         }
     }
@@ -246,6 +267,11 @@ public class MainMenuController {
             val = Integer.parseInt(data.getText());
         } catch (NumberFormatException ex) {
             logger.info("Value in input was incorrect");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Info");
+            alert.setHeaderText(null);
+            alert.setContentText("Incorrect input, set to default!");
+            alert.showAndWait();
             val = defaultValue;
         }
 

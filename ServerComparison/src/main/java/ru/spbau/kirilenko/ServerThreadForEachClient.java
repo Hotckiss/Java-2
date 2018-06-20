@@ -26,7 +26,7 @@ public class ServerThreadForEachClient {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
             logger.info("cannot run server with that port " + e.getMessage());
-            return;
+            return; ///STOP server
         }
         isActive = true;
         new Thread(() -> {
@@ -35,7 +35,7 @@ public class ServerThreadForEachClient {
                 try {
                     client = serverSocket.accept();
                 } catch (IOException e) {
-                    stop();
+                    stop(); //STOP server
                     logger.info("cannot accept new user " + e.getMessage());
                     return;
                 }
@@ -81,6 +81,12 @@ public class ServerThreadForEachClient {
                     writeRequest(queryResult, array, sortTime, qTime);
                 }
             } catch (IOException e) {
+                //client stop working!
+                try {
+                    client.close();
+                } catch (IOException e1) {
+                    logger.info("cannot disconnect client " + e.getMessage());
+                }
                 logger.info("IO error while receiving message " + e.getMessage());
             }
         }
