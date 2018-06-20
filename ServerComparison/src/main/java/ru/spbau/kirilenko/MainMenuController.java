@@ -201,6 +201,12 @@ public class MainMenuController {
                 alert.setHeaderText(null);
                 alert.setContentText("error in thread where client was runned, probably with connection top server!");
                 alert.showAndWait();
+            } catch (ClientError clientError) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Info");
+                alert.setHeaderText(null);
+                alert.setContentText("Client havent finish testing");
+                alert.showAndWait();
             }
         }
     }

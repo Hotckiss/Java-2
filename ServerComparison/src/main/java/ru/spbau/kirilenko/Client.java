@@ -16,7 +16,7 @@ public class Client {
 
     private ClientBaggage baggage;
 
-    public void runClient() throws IOException {
+    public void runClient() throws IOException, ClientError {
         int sumSortingTimes = 0;
         int sumSingleRequestTime = 0;
         long startTime = System.currentTimeMillis();
@@ -46,14 +46,14 @@ public class Client {
         } catch (InterruptedException | IOException ex) {
             logger.info("\"I/O error while connected to server\"");
             socket.close();
-            System.err.println("I/O error while connected to server");
-            return;
+            throw new ClientError("Client was interrupted;");
         }
 
         try {
             socket.close();
         } catch (IOException ex) {
             System.err.println("cannot close socket");
+            throw new ClientError("Client cannot finish connection");
         }
 
         long totalTime = System.currentTimeMillis() - startTime;
