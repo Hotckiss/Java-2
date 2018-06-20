@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 public class MainMenuController {
     private static final Logger logger = Logger.getLogger("UILogger");
-
+    private boolean error = false;
     @FXML private ChoiceBox architecture;
     @FXML private TextField valueX;
     @FXML private TextField lowerBound;
@@ -80,7 +80,7 @@ public class MainMenuController {
         switch (bs.getBoundedValue().getType()) {
             case NUMBERS_IN_ARRAY:
                 filename = "changing_N";
-                for (int i = bs.getBoundedValue().getLowerBound(); i <= bs.getBoundedValue().getUpperBound(); i += bs.getBoundedValue().getStep()) {
+                for (int i = bs.getBoundedValue().getLowerBound(); (i <= bs.getBoundedValue().getUpperBound()) && (!error); i += bs.getBoundedValue().getStep()) {
                     Thread[] clients = new Thread[bs.getClientsOnline()];
                     for (int j = 0; j < bs.getClientsOnline(); j++) {
                         clients[j] = new Thread(new ClientRunner(new Client(new ClientBaggage(host, 8228, bs.getQueriesNumber(), i, bs.getDelta(), i))));
@@ -94,6 +94,7 @@ public class MainMenuController {
                         try {
                             clients[j].join();
                         } catch (InterruptedException e) {
+                            error = true;
                             logger.info("Thread interrupted  " + e.getMessage());
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle("Info");
@@ -106,7 +107,7 @@ public class MainMenuController {
                 break;
             case CLIENTS_ONLINE:
                 filename = "changing_M";
-                for (int i = bs.getBoundedValue().getLowerBound(); i <= bs.getBoundedValue().getUpperBound(); i += bs.getBoundedValue().getStep()) {
+                for (int i = bs.getBoundedValue().getLowerBound();(i <= bs.getBoundedValue().getUpperBound()) && (!error); i += bs.getBoundedValue().getStep()) {
                     Thread[] clients = new Thread[i];
                     for (int j = 0; j < i; j++) {
                         clients[j] = new Thread(new ClientRunner(new Client(new ClientBaggage(host, 8228, bs.getQueriesNumber(), bs.getArraysSize(), bs.getDelta(), i))));
@@ -120,6 +121,7 @@ public class MainMenuController {
                         try {
                             clients[j].join();
                         } catch (InterruptedException e) {
+                            error = true;
                             logger.info("Thread interrupted  " + e.getMessage());
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle("Info");
@@ -132,7 +134,7 @@ public class MainMenuController {
                 break;
             case QUERY_DELAY:
                 filename = "changing_Delay";
-                for (int i = bs.getBoundedValue().getLowerBound(); i <= bs.getBoundedValue().getUpperBound(); i += bs.getBoundedValue().getStep()) {
+                for (int i = bs.getBoundedValue().getLowerBound();(i <= bs.getBoundedValue().getUpperBound()) && (!error); i += bs.getBoundedValue().getStep()) {
                     Thread[] clients = new Thread[bs.getClientsOnline()];
                     for (int j = 0; j < bs.getClientsOnline(); j++) {
                         clients[j] = new Thread(new ClientRunner(new Client(new ClientBaggage(host, 8228, bs.getQueriesNumber(), bs.getArraysSize(), i, i))));
@@ -146,6 +148,7 @@ public class MainMenuController {
                         try {
                             clients[j].join();
                         } catch (InterruptedException e) {
+                            error = true;
                             logger.info("Thread interrupted  " + e.getMessage());
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle("Info");
@@ -159,6 +162,14 @@ public class MainMenuController {
         }
 
         System.out.println("hooray");
+
+        if (error) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Info");
+            alert.setHeaderText(null);
+            alert.setContentText("Error occurred, testing failed");
+            alert.showAndWait();
+        }
 
         try {
             StatisticCollector.writeToFile(filename);
@@ -196,6 +207,7 @@ public class MainMenuController {
                 client.runClient();
             } catch (IOException e) {
                 logger.info("Cannot connect to server " + e.getMessage());
+                error = true;
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Info");
                 alert.setHeaderText(null);
@@ -203,6 +215,7 @@ public class MainMenuController {
                 alert.showAndWait();
             } catch (ClientError clientError) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                error = true;
                 alert.setTitle("Info");
                 alert.setHeaderText(null);
                 alert.setContentText("Client havent finish testing");
