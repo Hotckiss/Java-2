@@ -93,7 +93,7 @@ public class MainMenuController {
                         try {
                             clients[j].join();
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            logger.info("Thread interrupted  " + e.getMessage());
                         }
                     }
                 }
@@ -114,7 +114,7 @@ public class MainMenuController {
                         try {
                             clients[j].join();
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            logger.info("Thread interrupted  " + e.getMessage());
                         }
                     }
                 }
@@ -135,7 +135,7 @@ public class MainMenuController {
                         try {
                             clients[j].join();
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            logger.info("Thread interrupted  " + e.getMessage());
                         }
                     }
                 }
@@ -147,8 +147,6 @@ public class MainMenuController {
         try {
             StatisticCollector.writeToFile(filename);
         } catch (FileNotFoundException e) {
-            logger.info("Directory doesnt exist");
-            e.printStackTrace();
         }
 
         chart = new LineChart<>(xAxis, yAxis);
@@ -180,9 +178,8 @@ public class MainMenuController {
         public void run() {
             try {
                 client.runClient();
-                logger.info("Cannot connect to server");
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.info("Cannot connect to server " + e.getMessage());
             }
         }
     }

@@ -52,7 +52,7 @@ public class ServerNonBlocking {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.bind(new InetSocketAddress(port));
         } catch (IOException e) {
-            logger.info("cannot connect server to port");
+            logger.info("cannot connect server to port " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -67,7 +67,7 @@ public class ServerNonBlocking {
                 selectorRead.register(new ClientMessages(socketChannel));
                 readSelector.wakeup();
             } catch (IOException e) {
-                logger.info("cannot accept user");
+                logger.info("cannot accept user " + e.getMessage());
                 stop();
             }
         }
