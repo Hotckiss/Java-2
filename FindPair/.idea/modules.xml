@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FindPair.iml" filepath="$PROJECT_DIR$/.idea/modules/FindPair.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FindPair_main.iml" filepath="$PROJECT_DIR$/.idea/modules/FindPair_main.iml" group="FindPair" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FindPair_test.iml" filepath="$PROJECT_DIR$/.idea/modules/FindPair_test.iml" group="FindPair" />
+    </modules>
+  </component>
+</project>
