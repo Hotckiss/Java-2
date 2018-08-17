@@ -1,7 +1,6 @@
 sudo: false
 language: java
 before_install:
-    - chmod +x hw1ThreadPool/gradlew
-script:
-    - cd hw1ThreadPool
+    - chmod +x hw0Lazy/gradlew
+    - cd hw0Lazy
     - ./gradlew build
