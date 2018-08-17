@@ -1,7 +1,6 @@
 sudo: false
 language: java
 before_install:
-    - chmod +x SimpleFTP/gradlew
-script:
-    - cd SimpleFTP
+    - chmod +x hw0Lazy/gradlew
+    - cd hw0Lazy
     - ./gradlew build
