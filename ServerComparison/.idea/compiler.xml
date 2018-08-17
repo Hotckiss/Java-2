@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ServerComparison_main" target="1.8" />
+      <module name="ServerComparison_test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="HaskellBuildOptions">
+    <ghcPath>F:\Program Files\Haskell Platform\8.2.1\bin\ghc.exe</ghcPath>
+    <cabalPath>F:\Program Files\Haskell Platform\8.2.1\lib\extralibs\bin\cabal.exe</cabalPath>
+    <stackPath>C:\Users\Ђ­¤аҐ©\AppData\Roaming\local\bin\stack.exe</stackPath>
+  </component>
+</project>
