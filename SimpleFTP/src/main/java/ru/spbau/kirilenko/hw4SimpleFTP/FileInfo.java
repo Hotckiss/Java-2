@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
  * Class that stores one entry of result of list command to server
  * Stores file(directory) name and flag that shows is this is file or folder
  */
-public class FileInfo {
+public class FileInfo implements Comparable<FileInfo> {
     @NotNull private final String name;
     private final boolean isDirectory;
 
@@ -62,5 +62,22 @@ public class FileInfo {
             return this.name.equals(that.name) && (this.isDirectory == that.isDirectory);
         }
         return false;
+    }
+
+    /**
+     * Method that orders folders first and then files
+     * @param o other object to compare
+     * @return result of comparision
+     */
+    @Override
+    public int compareTo(@NotNull FileInfo o) {
+        if (isDirectory && !o.isDirectory) {
+            return -1;
+        }
+        if (!isDirectory && o.isDirectory) {
+            return 1;
+        }
+
+        return name.compareTo(o.name);
     }
 }
