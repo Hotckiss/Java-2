@@ -1,0 +1,16 @@
+Configuration:
+Arch type: NON_BLOCKING_SERVER
+Number of queries from each client: 10
+Variable: NUMBERS_IN_ARRAY
+Range: from 10000 to 30000 with step 2500
+Clients online: 10
+Delay: 100
+10000 359
+12500 751
+15000 949
+17500 1081
+20000 1698
+22500 2446
+25000 2844
+27500 3271
+30000 3553
